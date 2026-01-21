@@ -14,5 +14,12 @@ def get_patient(patient_id):
 def add_patient(patient):
     con = sqlite3.connect('tf_backend_api.db')
     cur = con.cursor()
-    cur.execute('INSERT INTO patient VALUES (?,?,?)',(patient.id, patient.name,patient.current_city))
-    con.commit()
+    try:
+        cur.execute('INSERT INTO patient VALUES (?,?,?)',(patient.id, patient.name,patient.current_city))
+        con.commit()
+    except sqlite3.IntegrityError:
+        print("Patient with given ID already exists.")
+        return None
+
+    finally:
+        con.close() 
